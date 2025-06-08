@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.JiluDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.yonghu_id as yonghuId
+        ,a.goods_id as goodsId
+        ,a.num as num
+        ,a.lingyong_time as lingyongTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.JiluView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+        ,goods.goods_name as goodsName
+        ,goods.goods_types as goodsTypes
+        ,goods.goods_number as goodsNumber
+        ,goods.astrict_num as astrictNum
+        ,goods.goods_photo as goodsPhoto
+        ,goods.danwei as danwei
+        ,goods.danjia as danjia
+        ,goods.goods_content as goodsContent
+        ,goods.flag as flag
+        ,yonghu.name as name
+        ,yonghu.username as username
+        ,yonghu.password as password
+        ,yonghu.img_photo as imgPhoto
+        ,yonghu.sex_types as sexTypes
+        ,yonghu.phone as phone
+        ,yonghu.id_number as idNumber
+        ,yonghu.role as role
+
+        FROM jilu  a
+        left JOIN goods goods ON a.goods_id = goods.id
+        left JOIN yonghu yonghu ON a.yonghu_id = yonghu.id
+
+        <where>
+            <if test="params.yonghuId != null">
+                and a.yonghu_id = #{params.yonghuId}
+            </if>
+            <if test="params.goodsId != null">
+                and a.goods_id = #{params.goodsId}
+            </if>
+            <if test="params.numStart != null">
+                <![CDATA[  and a.num >= #{params.numStart}   ]]>
+            </if>
+            <if test="params.numEnd != null">
+                <![CDATA[  and a.num <= #{params.numEnd}   ]]>
+            </if>
+            <if test=" params.lingyongTimeStart != '' and params.lingyongTimeStart != null ">
+                <![CDATA[  and DATE_FORMAT(a.lingyong_time, '%Y-%m-%d %H:%T:%s') >=
+                DATE_FORMAT(#{params.lingyongTimeStart}, '%Y-%m-%d %H:%T:%s')   ]]>
+            </if>
+            <if test=" params.lingyongTimeEnd != '' and params.lingyongTimeEnd != null ">
+                <![CDATA[  and DATE_FORMAT(a.lingyong_time, '%Y-%m-%d %H:%T:%s') <=
+                DATE_FORMAT(#{params.lingyongTimeEnd} , '%Y-%m-%d %H:%T:%s')    ]]>
+            </if>
+
+            <if test=" params.goodsName != '' and params.goodsName != null and params.goodsName != 'null' ">
+                and goods.goods_name like CONCAT('%',#{params.goodsName},'%')
+            </if>
+            <if test="params.goodsTypes != null">
+                and goods.goods_types = #{params.goodsTypes}
+            </if>
+
+            <if test="params.goodsNumberStart != null ">
+                <![CDATA[  and goods.goods_number >= #{params.goodsNumberStart}   ]]>
+            </if>
+            <if test="params.goodsNumberEnd != null ">
+                <![CDATA[  and goods.goods_number <= #{params.goodsNumberEnd}   ]]>
+            </if>
+            <if test="params.astrictNumStart != null ">
+                <![CDATA[  and goods.astrict_num >= #{params.astrictNumStart}   ]]>
+            </if>
+            <if test="params.astrictNumEnd != null ">
+                <![CDATA[  and goods.astrict_num <= #{params.astrictNumEnd}   ]]>
+            </if>
+            <if test=" params.danwei != '' and params.danwei != null and params.danwei != 'null' ">
+                and goods.danwei like CONCAT('%',#{params.danwei},'%')
+            </if>
+            <if test="params.danjiaStart != null ">
+                <![CDATA[  and goods.danjia >= #{params.danjiaStart}   ]]>
+            </if>
+            <if test="params.danjiaEnd != null ">
+                <![CDATA[  and goods.danjia <= #{params.danjiaEnd}   ]]>
+            </if>
+            <if test=" params.goodsContent != '' and params.goodsContent != null and params.goodsContent != 'null' ">
+                and goods.goods_content like CONCAT('%',#{params.goodsContent},'%')
+            </if>
+            <if test="params.flagStart != null ">
+                <![CDATA[  and goods.flag >= #{params.flagStart}   ]]>
+            </if>
+            <if test="params.flagEnd != null ">
+                <![CDATA[  and goods.flag <= #{params.flagEnd}   ]]>
+            </if>
+            <if test=" params.name != '' and params.name != null and params.name != 'null' ">
+                and yonghu.name like CONCAT('%',#{params.name},'%')
+            </if>
+            <if test=" params.username != '' and params.username != null and params.username != 'null' ">
+                and yonghu.username like CONCAT('%',#{params.username},'%')
+            </if>
+            <if test=" params.password != '' and params.password != null and params.password != 'null' ">
+                and yonghu.password like CONCAT('%',#{params.password},'%')
+            </if>
+            <if test="params.sexTypes != null">
+                and yonghu.sex_types = #{params.sexTypes}
+            </if>
+
+            <if test=" params.phone != '' and params.phone != null and params.phone != 'null' ">
+                and yonghu.phone like CONCAT('%',#{params.phone},'%')
+            </if>
+            <if test=" params.idNumber != '' and params.idNumber != null and params.idNumber != 'null' ">
+                and yonghu.id_number like CONCAT('%',#{params.idNumber},'%')
+            </if>
+            <if test=" params.role != '' and params.role != null and params.role != 'null' ">
+                and yonghu.role like CONCAT('%',#{params.role},'%')
+            </if>
+        </where>
+        order by a.id desc
+    </select>
+
+</mapper>
